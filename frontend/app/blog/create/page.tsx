@@ -10,7 +10,12 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { blogsApi, categoriesApi } from '@/lib/api';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { Loader2, Eye, Save, Send } from 'lucide-react';
-
+type CreateBlogResponse = {
+  blog: {
+    status: string;
+    slug: string;
+  };
+};
 const schema = z.object({
   title: z.string().min(5, 'Min 5 characters').max(150),
   excerpt: z.string().min(10, 'Min 10 characters').max(300),
@@ -43,14 +48,31 @@ export default function CreateBlogPage() {
   const content = watch('content', '');
   const coverImage = watch('coverImage', '');
 
-  const mutation = useMutation({
-    mutationFn: (data: any) => blogsApi.create(data) as any,
-    onSuccess: (res) => {
-      toast.success(res.blog.status === 'published' ? 'Blog published! 🎉' : 'Saved as draft');
-      router.push(res.blog.status === 'published' ? `/blog/${res.blog.slug}` : '/dashboard');
-    },
-    onError: (err: any) => toast.error(err.message),
-  });
+  // const mutation = useMutation({
+  //   mutationFn: (data: any) => blogsApi.create(data) as any,
+  //   onSuccess: (res) => {
+  //     toast.success(res.blog.status === 'published' ? 'Blog published! 🎉' : 'Saved as draft');
+  //     router.push(res.blog.status === 'published' ? `/blog/${res.blog.slug}` : '/dashboard');
+  //   },
+  //   onError: (err: any) => toast.error(err.message),
+  // });
+  const mutation = useMutation<CreateBlogResponse>({
+  mutationFn: (data: FormData) => blogsApi.create(data) ,
+  onSuccess: (res) => {
+    toast.success(
+      res.blog.status === 'published'
+        ? 'Blog published! 🎉'
+        : 'Saved as draft'
+    );
+
+    router.push(
+      res.blog.status === 'published'
+        ? `/blog/${res.blog.slug}`
+        : '/dashboard'
+    );
+  },
+  onError: (err: any) => toast.error(err.message),
+});
 
   const onSubmit = (data: FormData) => {
     const tags = data.tags ? data.tags.split(',').map((t) => t.trim()).filter(Boolean) : [];

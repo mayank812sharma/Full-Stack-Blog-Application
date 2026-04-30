@@ -10,6 +10,15 @@ import { useAuthStore } from '@/store/authStore';
 import { formatDate, timeAgo, generateAvatarUrl } from '@/lib/utils';
 import { Heart, Bookmark, Clock, Eye, Share2, MessageCircle, Edit, Trash2, Send } from 'lucide-react';
 
+type LikeResponse = {
+  liked: boolean;
+  likeCount: number;
+};
+
+type SaveResponse = {
+  saved: boolean;
+};
+
 export default function BlogDetailClient({ initialBlog }: { initialBlog: any }) {
   const { user, isAuthenticated } = useAuthStore();
   const queryClient = useQueryClient();
@@ -24,21 +33,37 @@ export default function BlogDetailClient({ initialBlog }: { initialBlog: any }) 
     queryFn: () => commentsApi.getAll(initialBlog._id, { limit: 20 }) as any,
   });
 
-  const likeMutation = useMutation({
-    mutationFn: () => blogsApi.like(initialBlog._id) as any,
-    onSuccess: (data) => {
-      setLiked(data.liked);
-      setLikeCount(data.likeCount);
-    },
-  });
+  // const likeMutation = useMutation({
+  //   mutationFn: () => blogsApi.like(initialBlog._id) as any,
+  //   onSuccess: (data) => {
+  //     setLiked(data.liked);
+  //     setLikeCount(data.likeCount);
+  //   },
+  // });
 
-  const saveMutation = useMutation({
-    mutationFn: () => blogsApi.save(initialBlog._id) as any,
-    onSuccess: (data) => {
-      setSaved(data.saved);
-      toast.success(data.saved ? 'Saved!' : 'Removed from saved');
-    },
-  });
+ const likeMutation = useMutation<LikeResponse>({
+  mutationFn: () => blogsApi.like(initialBlog._id) as any,
+  onSuccess: (data) => {
+    setLiked(data.liked);
+    setLikeCount(data.likeCount);
+  },
+});
+
+  // const saveMutation = useMutation({
+  //   mutationFn: () => blogsApi.save(initialBlog._id) as any,
+  //   onSuccess: (data) => {
+  //     setSaved(data.saved);
+  //     toast.success(data.saved ? 'Saved!' : 'Removed from saved');
+  //   },
+  // });
+
+const saveMutation = useMutation<SaveResponse>({
+  mutationFn: () => blogsApi.save(initialBlog._id) as any ,
+  onSuccess: (data) => {
+    setSaved(data.saved);
+    toast.success(data.saved ? 'Saved!' : 'Removed from saved');
+  },
+});
 
   const commentMutation = useMutation({
     mutationFn: (content: string) => commentsApi.create(initialBlog._id, { content }) as any,
@@ -261,7 +286,7 @@ export default function BlogDetailClient({ initialBlog }: { initialBlog: any }) 
                 key={c._id}
                 comment={c}
                 currentUser={user}
-                onDelete={(id) => deleteCommentMutation.mutate(id)}
+                onDelete={(id : string) => deleteCommentMutation.mutate(id)}
               />
             ))
           )}
