@@ -65,51 +65,16 @@ blogapp/
 
 ---
 
-## ⚙️ Setup & Installation
 
-### 1. Clone and install
 
-```bash
-# Backend
-cd backend
-cp .env.example .env        # Fill in MONGO_URI and JWT_SECRET
-npm install
-npm run seed                # Seeds demo data
-npm run dev                 # Starts on :5000
-
-# Frontend
-cd frontend
-cp .env.example .env.local  # Set NEXT_PUBLIC_API_URL
-npm install
-npm run dev                 # Starts on :3000
-```
-
-### 2. Environment variables
-
-**Backend `.env`**
-```
-NODE_ENV=development
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/blogapp
-JWT_SECRET=your_super_secret_32_char_minimum_key
-JWT_EXPIRE=7d
-CLIENT_URL=http://localhost:3000
-```
-
-**Frontend `.env.local`**
-```
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
-```
-
-### 3. Demo accounts (after seeding)
+ Demo accounts (after seeding)
 | Role  | Email                  | Password    |
 |-------|------------------------|-------------|
 | Admin | admin@blogapp.com      | Admin@1234  |
 | User  | john@blogapp.com       | John@1234   |
 
 ---
-
-## 📡 API Reference
+ API Reference
 
 | Method | Endpoint                          | Auth     | Description              |
 |--------|-----------------------------------|----------|--------------------------|
@@ -140,7 +105,6 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api
 | PATCH  | /api/admin/blogs/:id/feature      | Admin    | Toggle featured          |
 | DELETE | /api/admin/blogs/:id              | Admin    | Delete any blog          |
 
----
 
 ## 🛡️ Security Practices
 - Passwords hashed with bcrypt (salt rounds: 12)
@@ -169,4 +133,4 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api
 
 ---
 
-Built as a production-grade, resume-worthy project demonstrating full stack engineering at scale.
+Built as a production-grade project demonstrating full stack engineering at scale.
